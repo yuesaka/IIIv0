@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">InstinctiveIntervalIdentification</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="menu_settings">Settings</string>
+    <string name="play_interval">Play Inteval</string>
+    <string name="countdown">5</string>
+    <string name="unison">Unison</string>
+    <string name="up">Up</string>
+    <string name="down">Down</string>
+    <string name="intervals">Intervals</string>
+    <string name="directions">Directions</string>
+
+</resources>
