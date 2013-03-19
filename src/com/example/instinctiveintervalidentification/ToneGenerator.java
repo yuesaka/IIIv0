@@ -10,99 +10,129 @@ import android.util.Log;
 
 public class ToneGenerator {
 	private static final String TAG = "ToneGenerator";
-	private Generator mGenerator;
 	private ScheduledExecutorService mExecutor;
+	
+	public static final int TYPE_SINE = 0;
+	public static final int TYPE_SQUARE = 1;
+	// private AudioTrack mAudioTrack;
+	private int wave_type;
+	private int duration; // in seconds
+	private final int sampleRate = 44100; // 44100 sample rate
+	private int numSamples;
+	private double sample[];
+	private double freqOfTone; // in hz
+	private byte generatedSnd[];
+
 
 	public ToneGenerator() {
 
 		Log.v(TAG, "Creating ToneGenerator...");
-
+		Log.v(TAG, "setWaveType->setting wave_type to:" + TYPE_SINE);
+		wave_type = TYPE_SINE; // sine wave by default
 		// mExecutor = Executors.newSingleThreadScheduledExecutor();
-		mExecutor = Executors.newScheduledThreadPool(3);
+		// mExecutor = Executors.newScheduledThreadPool(3);
 	}
 
-	public void playToneAsync(double freq, int duration) {
-		Log.v(TAG, "Starting the Asynchronous Generator thread...");
-		mGenerator = new Generator(freq, duration);
-		mExecutor.execute(mGenerator);
-
+	public void setWaveType(int wave_type_) {
+		Log.v(TAG, "setWaveType->setting wave_type to:" + wave_type_);
+		wave_type = wave_type_;
 	}
 
-	public void playTone(double freq, int duration) {
-		Log.v(TAG, "Starting the Synchronous Generator thread...");
+	public void playTone(double freq, int duration_) {
 		Log.v(TAG, "Duration: " + duration);
-		mGenerator = new Generator(freq, duration);
-		// mExecutor.execute(mGenerator);
-		// new Thread(mGenerator).start();
-		mGenerator.run();
-
+		
+		duration = duration_;
+		freqOfTone = freq;
+		numSamples = (duration * sampleRate);
+		sample = new double[numSamples];
+		generatedSnd = new byte[2 * numSamples];
+		
+		genTone();
+		playSound();
+		
 	}
-
-	/*
-
-	 */
-
-	private class Generator implements Runnable {
-
-		// private AudioTrack mAudioTrack;
-		private int duration; // in seconds
-		private final int sampleRate = 44100; // 44100 sample rate
-		private int numSamples;
-		private double sample[];
-		private double freqOfTone; // in hz
-		private byte generatedSnd[];
-
-		public Generator(double freq, int duration_) {
-			duration = duration_;
-			freqOfTone = freq;
-			numSamples = (duration * sampleRate);
-			sample = new double[numSamples];
-			generatedSnd = new byte[2 * numSamples];
-		}
-
-		public void run() {
-			genTone();
-			playSound();
-		}
-
-		private void genTone() {
-			/*
-			 * 	case WAVEFORM_SINE:
-				fValue = (float) Math.sin(fPeriodPosition * 2.0 * Math.PI);
+	private void genTone() {
+		Log.v(TAG, "WAVE_TYPE:" + wave_type);
+		// fill out the array
+		double phase = 0;
+		for (int i = 0; i < numSamples; ++i) {
+			switch (wave_type) {
+			case TYPE_SINE:
+				sample[i] = Math.sin(phase);
+				phase = phase + ((2 * Math.PI * freqOfTone) / sampleRate);
+				if (phase > (2 * Math.PI)) {
+					phase = phase - (2 * Math.PI);
+				}
 				break;
-
-				case WAVEFORM_SQUARE:
-				fValue = (fPeriodPosition < 0.5F) ? 1.0F : -1.0F;
-			 */
-			
-			// fill out the array
-			for (int i = 0; i < numSamples; ++i) {
-				double fPeriodPosition = i /(sampleRate/freqOfTone);
-				//sample[i] = Math.sin(2 * Math.PI * fPeriodPosition);
-				sample[i] = (fPeriodPosition < 0.5) ? 1 : -1;
+			case TYPE_SQUARE:
+				if (phase < Math.PI) {
+					sample[i] = 1;
+				} else {
+					sample[i] = -1;
+				}
+				phase = phase + ((2 * Math.PI * freqOfTone) / sampleRate);
+				if (phase > (2 * Math.PI)) {
+					phase = phase - (2 * Math.PI);
+				}
+				break;
 			}
 
-			// convert to 16bit PCM sound array
-			// assume sample buffer is normalized
-			int idx = 0;
-			for (final double dVal : sample) {
-				// scale to maximum amplitude
-				final short val = (short) ((dVal * 32767));
-				// in 16-bit wav PCM, first byte is the low order byte
-				generatedSnd[idx++] = (byte) (val & 0x00ff);
-				generatedSnd[idx++] = (byte) ((val & 0xff00) >>> 8);
-			}
 		}
 
-		private void playSound() {
-			final AudioTrack audioTrack = new AudioTrack(
-					AudioManager.STREAM_MUSIC, sampleRate,
-					AudioFormat.CHANNEL_CONFIGURATION_MONO,
-					AudioFormat.ENCODING_PCM_16BIT, generatedSnd.length,
-					AudioTrack.MODE_STREAM);
-			audioTrack.write(generatedSnd, 0, generatedSnd.length);
-			audioTrack.play();
+		// add attack and decay
+		int idx = 0;
+		int i = 0;
+
+		int ramp = numSamples / 3; // Amplitude ramp as a percent(3%) of
+									// sample
+									// count
+
+		for (i = 0; i < ramp; ++i) { // Ramp amplitude up (to avoid clicks)
+			double dVal = sample[i];
+			// Ramp up to maximum
+			final short val = (short) ((dVal * 32767 * i / ramp));
+			// in 16 bit wav PCM, first byte is the low order byte
+			generatedSnd[idx++] = (byte) (val & 0x00ff);
+			generatedSnd[idx++] = (byte) ((val & 0xff00) >>> 8);
+		}
+
+		for (; i < numSamples - ramp; ++i) { // Max amplitude for most of
+												// the samples
+			double dVal = sample[i];
+			// scale to maximum amplitude
+			final short val = (short) ((dVal * 32767));
+			// in 16 bit wav PCM, first byte is the low order byte
+			generatedSnd[idx++] = (byte) (val & 0x00ff);
+			generatedSnd[idx++] = (byte) ((val & 0xff00) >>> 8);
+		}
+
+		for (; i < numSamples; ++i) { // Ramp amplitude down
+			double dVal = sample[i];
+			// Ramp down to zero
+			final short val = (short) ((dVal * 32767 * (numSamples - i) / ramp));
+			// in 16 bit wav PCM, first byte is the low order byte
+			generatedSnd[idx++] = (byte) (val & 0x00ff);
+			generatedSnd[idx++] = (byte) ((val & 0xff00) >>> 8);
 		}
 
 	}
+
+	private void playSound() {
+		final AudioTrack audioTrack = new AudioTrack(
+				AudioManager.STREAM_MUSIC, sampleRate,
+				AudioFormat.CHANNEL_CONFIGURATION_MONO,
+				AudioFormat.ENCODING_PCM_16BIT, generatedSnd.length,
+				AudioTrack.MODE_STREAM);
+		try {
+			Log.v(TAG, "before write");
+			audioTrack.write(generatedSnd, 0, generatedSnd.length);
+			Log.v(TAG, "after write");
+			Log.v(TAG, "before play");
+			audioTrack.play();
+			Log.v(TAG, "after play");
+		} catch (IllegalStateException e) {
+			Log.v(TAG, "CAUGHT AN ERROR DURING PLAYING TONE");
+			e.printStackTrace();
+		}
+	}	
 }
