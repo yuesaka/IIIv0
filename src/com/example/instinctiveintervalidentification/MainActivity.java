@@ -4,12 +4,16 @@ import java.util.Random;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -45,6 +49,8 @@ public class MainActivity extends Activity {
 	private int numCorrect;
 	private int numWrong;
 
+	//timer related things
+	private int timelimit;
 	private CountDownTimer mCountDownTimer;
 	private boolean timerRunning;
 
@@ -65,6 +71,9 @@ public class MainActivity extends Activity {
 		
 		numCorrect = 0;
 		numWrong = 0;
+		SharedPreferences SP = PreferenceManager
+				.getDefaultSharedPreferences(getBaseContext());
+		timelimit = Integer.parseInt(SP.getString("timelimit", "5"));
 		
 		//Set up GridView of Interval options
 		GridView gridview = (GridView) findViewById(R.id.gridview);
@@ -93,7 +102,7 @@ public class MainActivity extends Activity {
 				mRadioGroup.clearCheck();
 				mCountDownTimer.cancel();
 				timerRunning = false;
-				mCountdown.setText("" + 5);
+				mCountdown.setText("" + timelimit);
 				mNumCorrect.setText("" + numCorrect);
 				mNumWrong.setText("" + numWrong);
 				mPlayInterval.setEnabled(true);
@@ -121,7 +130,7 @@ public class MainActivity extends Activity {
 
 			mIntervalPlayer.playInterval(baseNote, interval, direction);
 
-			mCountDownTimer = new CountDownTimer(5000, 100) {
+			mCountDownTimer = new CountDownTimer(timelimit*1000, 100) {
 
 				public void onTick(long millisUntilFinished) {
 					mCountdown.setText("" + millisUntilFinished / 1000);
@@ -131,7 +140,7 @@ public class MainActivity extends Activity {
 					timerRunning = false;
 					Toast.makeText(getApplicationContext(), "Out of Time!",
 							Toast.LENGTH_SHORT).show();
-					mCountdown.setText("5");
+					mCountdown.setText(Integer.toString(timelimit));
 					mPlayInterval.setEnabled(true);
 					numWrong++;
 					mNumWrong.setText("" + numWrong);
@@ -163,6 +172,30 @@ public class MainActivity extends Activity {
 		getMenuInflater().inflate(R.menu.activity_main, menu);
 		return true;
 	}
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		super.onOptionsItemSelected(item);
+		Log.v("MainActivity", Integer.toString(item.getItemId()));
+		if (item.getItemId() == R.id.menu_settings) {
+			Intent i = new Intent(getBaseContext(), AppPreferences.class);
+			startActivity(i);
+		}
+		return true;
+	}
+
+	
+	
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		SharedPreferences SP = PreferenceManager
+				.getDefaultSharedPreferences(getBaseContext());
+		timelimit = Integer.parseInt(SP.getString("timelimit", "5"));
+		mCountdown.setText("" + timelimit);
+	}
+
+
 
 	private class RadioGridAdapter extends BaseAdapter {
 		RadioGroup mRadioGroup;
