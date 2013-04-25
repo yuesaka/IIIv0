@@ -1,0 +1,249 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".MainActivity" >
+
+    <!--
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/play_interval"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:padding="5sp"
+            android:text="@string/play_interval" />
+
+        <TextView
+            android:id="@+id/countdown"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:padding="5sp"
+            android:text="@string/countdown" />
+    </LinearLayout>
+    -->
+<!--  
+    <Button
+        android:id="@+id/play_interval"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:onClick="playInterval"
+        android:text="@string/play_interval" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="15sp"
+        android:paddingTop="15sp"
+        android:text="@string/directions"
+        android:textSize="20sp" />
+
+    <RadioGroup
+        android:id="@+id/up_or_down_radio_group"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="15sp"
+        android:paddingRight="15sp" >
+
+        <RadioButton
+            android:id="@+id/radioDown"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/down" />
+    </RadioGroup>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="15sp"
+        android:text="@string/intervals"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/num_correct"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="15sp"
+        android:text="0"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/num_wrong"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="15sp"
+        android:text="0"
+        android:textSize="20sp" />
+
+    <GridView
+        android:id="@+id/gridview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:columnWidth="90dp"
+        android:gravity="center"
+        android:horizontalSpacing="20dp"
+        android:numColumns="auto_fit"
+        android:paddingLeft="15sp"
+        android:paddingRight="15sp"
+        android:stretchMode="columnWidth"
+        android:verticalSpacing="10dp" >
+    </GridView>
+
+    <TextView
+        android:id="@+id/countdown"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginRight="131dp"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:text="@string/countdown"
+        android:textSize="100sp" />
+
+    <TextView
+        android:id="@+id/countdown"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/up_or_down_radio_group"
+        android:layout_marginTop="96dp"
+        android:layout_toRightOf="@+id/up_or_down_radio_group"
+        android:paddingLeft="15sp"
+        android:text="Incorrects"
+        android:textSize="20sp" />
+
+    <RadioButton
+        android:id="@+id/radioUp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/countdown"
+        android:layout_toRightOf="@+id/num_correct"
+        android:text="@string/up" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@+id/countdown"
+        android:layout_below="@+id/countdown"
+        android:layout_marginTop="49dp"
+        android:paddingLeft="15sp"
+        android:text="Corrects"
+        android:textSize="20sp" />
+-->
+
+    <Button
+        android:id="@+id/play_interval"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="113dp"
+        android:layout_marginTop="80dp"
+        android:text="Button" />
+
+    <TextView
+        android:id="@+id/countdown"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/play_interval"
+        android:layout_alignBottom="@+id/play_interval"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="114dp"
+        android:text="Large Text"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <TextView
+        android:id="@+id/countdown"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/play_interval"
+        android:layout_marginLeft="33dp"
+        android:layout_marginTop="63dp"
+        android:text="Medium Text"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <RadioButton
+        android:id="@+id/radioUp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/countdown"
+        android:layout_below="@+id/countdown"
+        android:layout_marginTop="18dp"
+        android:text="RadioButton" />
+
+    <RadioButton
+        android:id="@+id/radioDown"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@+id/radioUp"
+        android:layout_below="@+id/radioUp"
+        android:layout_marginTop="18dp"
+        android:text="RadioButton" />
+
+    <TextView
+        android:id="@+id/interval_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/radioDown"
+        android:layout_below="@+id/radioDown"
+        android:layout_marginTop="38dp"
+        android:text="Medium Text"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <GridView
+        android:id="@+id/gridview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/interval_label"
+        android:layout_marginTop="21dp"
+        android:numColumns="3" >
+    </GridView>
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignRight="@+id/radioDown"
+        android:layout_marginBottom="35dp"
+        android:text="Medium Text"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <TextView
+        android:id="@+id/num_correct"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/textView4"
+        android:layout_alignBottom="@+id/textView4"
+        android:layout_toRightOf="@+id/textView4"
+        android:text="Medium Text"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <TextView
+        android:id="@+id/textView6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/num_correct"
+        android:layout_toRightOf="@+id/num_correct"
+        android:text="Medium Text"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <TextView
+        android:id="@+id/num_wrong"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/textView6"
+        android:layout_alignRight="@+id/countdown"
+        android:text="Medium Text"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+</RelativeLayout>

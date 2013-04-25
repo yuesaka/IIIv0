@@ -22,18 +22,22 @@ public final class R {
     public static final class id {
         public static final int countdown=0x7f090001;
         public static final int gridview=0x7f090005;
-        public static final int interval_button=0x7f090008;
-        public static final int menu_settings=0x7f090009;
+        public static final int interval_button=0x7f09000b;
+        public static final int interval_label=0x7f090008;
+        public static final int menu_settings=0x7f09000c;
         public static final int num_correct=0x7f090006;
         public static final int num_wrong=0x7f090007;
         public static final int play_interval=0x7f090000;
         public static final int radioDown=0x7f090004;
         public static final int radioUp=0x7f090003;
+        public static final int textView4=0x7f090009;
+        public static final int textView6=0x7f09000a;
         public static final int up_or_down_radio_group=0x7f090002;
     }
     public static final class layout {
         public static final int activity_main=0x7f030000;
-        public static final int cell=0x7f030001;
+        public static final int activity_main_old2=0x7f030001;
+        public static final int cell=0x7f030002;
     }
     public static final class menu {
         public static final int activity_main=0x7f080000;
