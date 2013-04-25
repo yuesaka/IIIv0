@@ -29,7 +29,7 @@ public class MainActivity extends Activity {
 
 	private static final String TAG = "MainActvity";
 	private static final String[] intervals = { "Unison", "m2", "M2", "m3",
-			"M3", "P4", "A4", "P5", "m6", "M6", "m7", "M7", "Octave" };
+			"M3", "P4", "A4", "P5", "m6", "M6", "m7", "M7", "Octave", "m9", "M9", "m10"};
 
 	/*UI objects*/
 	private static TextView mCountdown;
@@ -49,10 +49,14 @@ public class MainActivity extends Activity {
 	private int numCorrect;
 	private int numWrong;
 
-	//timer related things
-	private int timelimit;
+
 	private CountDownTimer mCountDownTimer;
 	private boolean timerRunning;
+	
+	//preferences
+	private int timelimit;
+	private int wavetype;
+	private int max_interval; //0 = unison, 12 = octave, 13 = m9 etc...
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -71,9 +75,14 @@ public class MainActivity extends Activity {
 		
 		numCorrect = 0;
 		numWrong = 0;
+		
+		//Set preference
 		SharedPreferences SP = PreferenceManager
 				.getDefaultSharedPreferences(getBaseContext());
 		timelimit = Integer.parseInt(SP.getString("timelimit", "5"));
+		wavetype = Integer.parseInt(SP.getString("wavetype", "0"));
+		max_interval = Integer.parseInt(SP.getString("interval", "12"));
+		mIntervalPlayer.setWaveType(wavetype);
 		
 		//Set up GridView of Interval options
 		GridView gridview = (GridView) findViewById(R.id.gridview);
@@ -123,7 +132,7 @@ public class MainActivity extends Activity {
 																// between
 																// A3 and A5
 			Random rand = new Random();
-			int interval = rand.nextInt(13);// for now, 0(unison) to 12(octave)
+			int interval = rand.nextInt(1 + max_interval);// for now, 0(unison) to 12(octave)
 			correctInterval = interval;
 			int direction = rand.nextInt(2);// 0 = up, 1 = down;
 			correctDirection = direction;
@@ -175,7 +184,7 @@ public class MainActivity extends Activity {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		super.onOptionsItemSelected(item);
-		Log.v("MainActivity", Integer.toString(item.getItemId()));
+		//Log.v("MainActivity", Integer.toString(item.getItemId()));
 		if (item.getItemId() == R.id.menu_settings) {
 			Intent i = new Intent(getBaseContext(), AppPreferences.class);
 			startActivity(i);
@@ -192,6 +201,9 @@ public class MainActivity extends Activity {
 		SharedPreferences SP = PreferenceManager
 				.getDefaultSharedPreferences(getBaseContext());
 		timelimit = Integer.parseInt(SP.getString("timelimit", "5"));
+		wavetype = Integer.parseInt(SP.getString("waveform", "0"));
+		max_interval = Integer.parseInt(SP.getString("interval", "12"));
+		mIntervalPlayer.setWaveType(wavetype);
 		mCountdown.setText("" + timelimit);
 	}
 

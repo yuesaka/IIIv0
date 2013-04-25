@@ -11,6 +11,10 @@ public class IntervalPlayer {
 		mToneGenerator = new ToneGenerator();
 		noteLength = noteLength_;
 	}
+	
+	public void setWaveType(int wave_type) {
+		mToneGenerator.setWaveType(wave_type);
+	}
 
 	public void playInterval(final Note baseNote, final int interval,
 			final int direction) {
@@ -48,7 +52,7 @@ public class IntervalPlayer {
 									.getFrequency(), noteLength);
 				}
 			}
-		}, 1001);
+		}, 1000);
 
 	}
 

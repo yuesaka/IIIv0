@@ -13,7 +13,11 @@ public class ToneGenerator {
 	private ScheduledExecutorService mExecutor;
 	
 	public static final int TYPE_SINE = 0;
-	public static final int TYPE_SQUARE = 1;
+	public static final int TYPE_TRIANGLE = 1;
+	public static final int TYPE_SAWTOOTH = 2;
+	public static final int TYPE_SQUARE = 3;
+
+
 	// private AudioTrack mAudioTrack;
 	private int wave_type;
 	private int duration; // in seconds
@@ -59,10 +63,6 @@ public class ToneGenerator {
 			switch (wave_type) {
 			case TYPE_SINE:
 				sample[i] = Math.sin(phase);
-				phase = phase + ((2 * Math.PI * freqOfTone) / sampleRate);
-				if (phase > (2 * Math.PI)) {
-					phase = phase - (2 * Math.PI);
-				}
 				break;
 			case TYPE_SQUARE:
 				if (phase < Math.PI) {
@@ -70,12 +70,23 @@ public class ToneGenerator {
 				} else {
 					sample[i] = -1;
 				}
-				phase = phase + ((2 * Math.PI * freqOfTone) / sampleRate);
-				if (phase > (2 * Math.PI)) {
-					phase = phase - (2 * Math.PI);
-				}
 				break;
+			case TYPE_SAWTOOTH:
+				sample[i] =( 2 * (phase/(Math.PI * 2))) - 1;
+				break;
+			case TYPE_TRIANGLE:
+				if (phase < Math.PI) {
+					sample[i] = ( 2 / Math.PI) * phase - 1;				
+				} else {
+					sample[i] = (-2 / Math.PI) * phase + 3;	
+				}
+				break;				
 			}
+			phase = phase + ((2 * Math.PI * freqOfTone) / sampleRate);
+			if (phase > (2 * Math.PI)) {
+				phase = phase - (2 * Math.PI);
+			}
+			
 
 		}
 
@@ -86,11 +97,12 @@ public class ToneGenerator {
 		int ramp = numSamples / 3; // Amplitude ramp as a percent(3%) of
 									// sample
 									// count
+		double amplitude_factor = 32767/20;
 
 		for (i = 0; i < ramp; ++i) { // Ramp amplitude up (to avoid clicks)
 			double dVal = sample[i];
 			// Ramp up to maximum
-			final short val = (short) ((dVal * 32767 * i / ramp));
+			final short val = (short) ((dVal * amplitude_factor * i / ramp));
 			// in 16 bit wav PCM, first byte is the low order byte
 			generatedSnd[idx++] = (byte) (val & 0x00ff);
 			generatedSnd[idx++] = (byte) ((val & 0xff00) >>> 8);
@@ -100,7 +112,7 @@ public class ToneGenerator {
 												// the samples
 			double dVal = sample[i];
 			// scale to maximum amplitude
-			final short val = (short) ((dVal * 32767));
+			final short val = (short) ((dVal * amplitude_factor));
 			// in 16 bit wav PCM, first byte is the low order byte
 			generatedSnd[idx++] = (byte) (val & 0x00ff);
 			generatedSnd[idx++] = (byte) ((val & 0xff00) >>> 8);
@@ -109,7 +121,7 @@ public class ToneGenerator {
 		for (; i < numSamples; ++i) { // Ramp amplitude down
 			double dVal = sample[i];
 			// Ramp down to zero
-			final short val = (short) ((dVal * 32767 * (numSamples - i) / ramp));
+			final short val = (short) ((dVal * amplitude_factor * (numSamples - i) / ramp));
 			// in 16 bit wav PCM, first byte is the low order byte
 			generatedSnd[idx++] = (byte) (val & 0x00ff);
 			generatedSnd[idx++] = (byte) ((val & 0xff00) >>> 8);
