@@ -16,7 +16,7 @@ public class ToneGenerator {
 	public static final int TYPE_TRIANGLE = 1;
 	public static final int TYPE_SAWTOOTH = 2;
 	public static final int TYPE_SQUARE = 3;
-
+	final AudioTrack audioTrack;
 
 	// private AudioTrack mAudioTrack;
 	private int wave_type;
@@ -29,10 +29,15 @@ public class ToneGenerator {
 
 
 	public ToneGenerator() {
-
+		audioTrack = new AudioTrack(
+				AudioManager.STREAM_MUSIC, sampleRate,
+				AudioFormat.CHANNEL_OUT_MONO,
+				AudioFormat.ENCODING_PCM_16BIT, sampleRate*2,
+				AudioTrack.MODE_STREAM);
 		Log.v(TAG, "Creating ToneGenerator...");
 		Log.v(TAG, "setWaveType->setting wave_type to:" + TYPE_SINE);
 		wave_type = TYPE_SINE; // sine wave by default
+		audioTrack.play();
 		// mExecutor = Executors.newSingleThreadScheduledExecutor();
 		// mExecutor = Executors.newScheduledThreadPool(3);
 	}
@@ -97,7 +102,7 @@ public class ToneGenerator {
 		int ramp = numSamples / 3; // Amplitude ramp as a percent(3%) of
 									// sample
 									// count
-		double amplitude_factor = 32767/20;
+		double amplitude_factor = 32767;
 
 		for (i = 0; i < ramp; ++i) { // Ramp amplitude up (to avoid clicks)
 			double dVal = sample[i];
@@ -130,17 +135,14 @@ public class ToneGenerator {
 	}
 
 	private void playSound() {
-		final AudioTrack audioTrack = new AudioTrack(
-				AudioManager.STREAM_MUSIC, sampleRate,
-				AudioFormat.CHANNEL_CONFIGURATION_MONO,
-				AudioFormat.ENCODING_PCM_16BIT, generatedSnd.length,
-				AudioTrack.MODE_STREAM);
+
 		try {
+			
 			Log.v(TAG, "before write");
 			audioTrack.write(generatedSnd, 0, generatedSnd.length);
 			Log.v(TAG, "after write");
 			Log.v(TAG, "before play");
-			audioTrack.play();
+			
 			Log.v(TAG, "after play");
 		} catch (IllegalStateException e) {
 			Log.v(TAG, "CAUGHT AN ERROR DURING PLAYING TONE");
