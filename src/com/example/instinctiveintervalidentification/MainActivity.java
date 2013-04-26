@@ -80,7 +80,7 @@ public class MainActivity extends Activity {
 		SharedPreferences SP = PreferenceManager
 				.getDefaultSharedPreferences(getBaseContext());
 		timelimit = Integer.parseInt(SP.getString("timelimit", "5"));
-		wavetype = Integer.parseInt(SP.getString("wavetype", "0"));
+		wavetype = Integer.parseInt(SP.getString("waveform", "0"));
 		max_interval = Integer.parseInt(SP.getString("interval", "12"));
 		mIntervalPlayer.setWaveType(wavetype);
 		
